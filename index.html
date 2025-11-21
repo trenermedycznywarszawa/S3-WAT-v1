@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a4d2e">
+    <meta name="description" content="S3 WAT Training Hub - Trening przygotowujący do selekcji jednostek specjalnych">
+    <title>S3 WAT Training Hub</title>
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22S3%20WAT%20Training%20Hub%22,%22short_name%22:%22S3%20Training%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a4d2e%22,%22theme_color%22:%22%231a4d2e%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%2520xmlns=%27http://www.w3.org/2000/svg%27%2520viewBox=%270%200%20192%20192%27%253E%253Crect%2520fill=%27%231a4d2e%27%2520width=%27192%27%2520height=%27192%27/%253E%253Ctext%2520x=%2750%25%27%2520y=%2750%25%27%2520font-size=%27120%27%2520fill=%27%23d32f2f%27%2520text-anchor=%27middle%27%2520dominant-baseline=%27central%27%253ES3%253C/text%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1a4d2e; --primary-light: #2d7a3f; --primary-dark: #0d2617;
+            --accent: #d32f2f; --accent-light: #ff5252; --success: #27ae60;
+            --warning: #f39c12; --danger: #e74c3c; --dark-bg: #0d1b2a;
+            --light-bg: #f5f5f5; --card-bg: #ffffff; --text-dark: #1a1a1a;
+            --text-light: #ffffff; --border-color: #ddd;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--light-bg); color: var(--text-dark); line-height: 1.6; }
+        body.dark-mode { background: var(--dark-bg); color: var(--text-light); }
+        body.dark-mode .card { background: #1a2a3a; color: var(--text-light); }
+        body.dark-mode .input, body.dark-mode textarea, body.dark-mode select { background: #263a4a; color: var(--text-light); border-color: #444; }
+        #app { display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .header-content { display: flex; align-items: center; gap: 1rem; }
+        .logo-img { width: 50px; height: 50px; background: white; border: 3px solid var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--accent); font-size: 20px; flex-shrink: 0; }
+        .header-title h1 { font-size: 1.2rem; margin: 0; }
+        .header-title p { font-size: 0.75rem; opacity: 0.9; margin: 0; }
+        .header-controls { display: flex; gap: 0.5rem; }
+        .header-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.3s; }
+        .header-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }
+        main { flex: 1; padding: 1rem; max-width: 1200px; width: 100%; margin: 0 auto; }
+        nav { background: white; border-bottom: 2px solid var(--primary); display: flex; gap: 0.5rem; overflow-x: auto; padding: 0 1rem; margin: -1rem -1rem 1rem -1rem; position: sticky; top: 70px; z-index: 99; }
+        body.dark-mode nav { background: #1a2a3a; }
+        nav button { background: none; border: none; padding: 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        body.dark-mode nav button { color: var(--text-light); }
+        nav button.active { border-bottom: 3px solid var(--accent); color: var(--accent); }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card h2 { color: var(--primary); margin-bottom: 1rem; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem; }
+        body.dark-mode .card h2 { color: var(--accent-light); }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-accent:hover { background: var(--accent-light); }
+        .btn-secondary { background: #ddd; color: var(--text-dark); }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .btn-block { width: 100%; margin-bottom: 0.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.3rem; font-weight: 600; }
+        .input, textarea, select { width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit; }
+        .input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1); }
+        textarea { resize: vertical; min-height: 100px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 1.5rem; border-radius: 12px; text-align: center; }
+        .stat-box h3 { font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.5rem; }
+        .stat-box .value { font-size: 2rem; font-weight: 700; }
+        .stat-box.accent { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); }
+        .timer-display { font-size: 4rem; font-weight: 700; text-align: center; color: var(--accent); font-family: 'Courier New', monospace; margin: 2rem 0; font-variant-numeric: tabular-nums; }
+        .timer-controls { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        body.dark-mode .modal-content { background: #1a2a3a; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { margin: 0; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        thead { background: var(--primary); color: white; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        tbody tr:hover { background: var(--light-bg); }
+        body.dark-mode tbody tr:hover { background: #263a4a; }
+        .exercise-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .exercise-card { background: var(--card-bg); border-left: 4px solid var(--accent); padding: 1rem; border-radius: 6px; cursor: pointer; transition: all 0.3s; }
+        .exercise-card:hover { box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2); transform: translateY(-2px); }
+        body.dark-mode .exercise-card { background: #263a4a; }
+        .exercise-card h3 { color: var(--primary); margin-bottom: 0.5rem; }
+        body.dark-mode .exercise-card h3 { color: var(--accent-light); }
+        .exercise-card .category { display: inline-block; background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; margin-bottom: 0.5rem; }
+        .norm-badge { display: inline-block; background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin: 0.25rem 0.25rem 0.25rem 0; }
+        .fab { position: fixed; bottom: 2rem; right: 2rem; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3); z-index: 50; }
+        .fab:hover { background: var(--accent-light); transform: scale(1.1); }
+        .hidden { display: none; }
+        @media (max-width: 768px) {
+            header { flex-direction: row; padding: 0.75rem; }
+            .header-title h1 { font-size: 1rem; }
+            .header-title p { font-size: 0.7rem; }
+            .logo-img { width: 40px; height: 40px; font-size: 16px; }
+            .timer-display { font-size: 2.5rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="header-content">
+                <div class="logo-img">S3</div>
+                <div class="header-title">
+                    <h1>S3 WAT Training Hub</h1>
+                    <p>Przygotowanie do jednostek specjalnych</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="header-btn" onclick="toggleDarkMode()" title="Tryb ciemny">🌙</button>
+            </div>
+        </header>
+        <main>
+            <nav>
+                <button class="nav-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-btn" onclick="showTab('exercises')">💪 Ćwiczenia</button>
+                <button class="nav-btn" onclick="showTab('timer')">⏱️ Timer</button>
+                <button class="nav-btn" onclick="showTab('log')">📝 Logger</button>
+                <button class="nav-btn" onclick="showTab('calculator')">🎯 Kalkulator</button>
+                <button class="nav-btn" onclick="showTab('norms')">🏅 Normy</button>
+                <button class="nav-btn" onclick="showTab('plans')">📋 Plany</button>
+                <button class="nav-btn" onclick="showTab('settings')">⚙️ Ustawienia</button>
+            </nav>
+            <div id="dashboard" class="tab-content active">
+                <div class="card">
+                    <h2>📊 Twoje Statystyki</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box"><h3>Treningi (7 dni)</h3><div class="value" id="stats-7days">0</div></div>
+                        <div class="stat-box accent"><h3>Treningi (30 dni)</h3><div class="value" id="stats-30days">0</div></div>
+                        <div class="stat-box"><h3>Seria treningowa</h3><div class="value" id="stats-streak">0</div></div>
+                        <div class="stat-box accent"><h3>Łącznie treningów</h3><div class="value" id="stats-total">0</div></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>🎯 Postęp w normach GROM</h2>
+                    <p>Wejdź w <strong>Kalkulator</strong>, aby sprawdzić swoje wyniki względem norm GROM/JWK/Formoza.</p>
+                    <button class="btn btn-accent" onclick="showTab('calculator')">Oblicz swoje wyniki</button>
+                </div>
+                <div class="card">
+                    <h2>📝 Ostatnie treningi</h2>
+                    <div id="recent-workouts"><p style="opacity: 0.7;">Brak zapisanych treningów. Dodaj pierwszy w zakładce <strong>Logger</strong>!</p></div>
+                </div>
+            </div>
+            <div id="exercises" class="tab-content">
+                <div class="card">
+                    <h2>💪 Biblioteka Ćwiczeń</h2>
+                    <p>Kliknij na ćwiczenie, aby zobaczyć szczegóły i normy dla jednostek specjalnych.</p>
+                    <div class="exercise-grid" id="exercise-grid"></div>
+                </div>
+            </div>
+            <div id="timer" class="tab-content">
+                <div class="card">
+                    <h2>⏱️ Timer Treningowy</h2>
+                    <div class="form-group">
+                        <label>Wybierz tryb:</label>
+                        <select class="input" id="timer-mode" onchange="changeTimerMode()">
+                            <option value="stopwatch">Stoper</option>
+                            <option value="fortime">For Time</option>
+                            <option value="emom">EMOM</option>
+                            <option value="tabata">Tabata</option>
+                            <option value="amrap">AMRAP</option>
+                        </select>
+                    </div>
+                    <div id="timer-config">
+                        <div class="form-group"><label>Czas (minuty):</label><input type="number" class="input" id="timer-minutes" value="1" min="0"></div>
+                        <div class="form-group"><label>Sekundy:</label><input type="number" class="input" id="timer-seconds" value="0" min="0" max="59"></div>
+                    </div>
+                    <div class="timer-display" id="timer-display">00:00</div>
+                    <div class="timer-controls">
+                        <button class="btn btn-accent" onclick="startTimer()">▶ Start</button>
+                        <button class="btn btn-secondary" onclick="pauseTimer()">⏸ Pauza</button>
+                        <button class="btn btn-primary" onclick="resetTimer()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+            <div id="log" class="tab-content">
+                <div class="card">
+                    <h2>📝 Dodaj Trening</h2>
+                    <form id="workout-form" onsubmit="saveWorkout(event)">
+                        <div class="form-group"><label>Data:</label><input type="date" class="input" id="workout-date" required></div>
+                        <div class="form-group">
+                            <label>Typ treningu:</label>
+                            <select class="input" id="workout-type">
+                                <option>Wytrzymałość</option>
+                                <option>Siła</option>
+                                <option>Mieszany</option>
+                                <option>Core</option>
+                                <option>Mobilność</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Opis treningu:</label><textarea class="input" id="workout-description" placeholder="Co robiłeś dzisiaj?"></textarea></div>
+                        <div class="form-group"><label>Samopoczucie (1-5):</label><input type="number" class="input" id="workout-feeling" min="1" max="5" value="3"></div>
+                        <button type="submit" class="btn btn-accent btn-block">Zapisz trening</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>📜 Historia Treningów</h2>
+                    <div id="workout-history"></div>
+                </div>
+            </div>
+            <div id="calculator" class="tab-content">
+                <div class="card">
+                    <h2>🎯 Kalkulator Norm</h2>
+                    <div class="form-group">
+                        <label>Wybierz jednostkę:</label>
+                        <select class="input" id="calc-unit">
+                            <option value="grom">GROM</option>
+                            <option value="jwk">JWK Lubliniec</option>
+                            <option value="formoza">Formoza</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Płeć:</label>
+                        <select class="input" id="calc-gender">
+                            <option value="M">Mężczyzna</option>
+                            <option value="K">Kobieta</option>
+                        </select>
+                    </div>
+                    <h3 style="margin-top: 1.5rem;">Wprowadź swoje wyniki:</h3>
+                    <div class="form-group"><label>Bieg 3000m (mm:ss):</label><input type="text" class="input" id="calc-run" placeholder="13:40"></div>
+                    <div class="form-group"><label>Podciąganie na drążku (ilość):</label><input type="number" class="input" id="calc-pullups" placeholder="9"></div>
+                    <div class="form-group"><label>Skłony tułowia 2min (ilość):</label><input type="number" class="input" id="calc-situps" placeholder="65"></div>
+                    <div class="form-group"><label>Pompki ciągłe (ilość):</label><input type="number" class="input" id="calc-pushups" placeholder="48"></div>
+                    <div class="form-group"><label>Bieg wahadłowy 10x10m (ss.ms):</label><input type="text" class="input" id="calc-shuttle" placeholder="30.8"></div>
+                    <button class="btn btn-accent btn-block" onclick="calculateNorms()">Oblicz wynik</button>
+                    <div id="calc-result" style="margin-top: 1.5rem;"></div>
+                </div>
+            </div>
+            <div id="norms" class="tab-content">
+                <div class="card">
+                    <h2>🏅 Normy GROM</h2>
+                    <table>
+                        <thead><tr><th>Test</th><th>Mężczyźni</th><th>Kobiety</th></tr></thead>
+                        <tbody>
+                            <tr><td>Bieg 3000m</td><td>&lt;13:40</td><td>&lt;15:30</td></tr>
+                            <tr><td>Podciąganie</td><td>≥9</td><td>≥5</td></tr>
+                            <tr><td>Skłony 2min</td><td>≥65</td><td>≥55</td></tr>
+                            <tr><td>Pompki</td><td>≥48</td><td>≥30</td></tr>
+                            <tr><td>Bieg wahadłowy 10x10m</td><td>&lt;30.8s</td><td>&lt;32.3s</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h2>🏅 Normy JWK Lubliniec</h2>
+                    <table>
+                        <thead><tr><th>Test</th><th>Mężczyźni</th><th>Kobiety</th></tr></thead>
+                        <tbody>
+                            <tr><td>Bieg 3000m</td><td>&lt;13:00</td><td>&lt;15:00</td></tr>
+                            <tr><td>Podciąganie</td><td>≥10</td><td>≥6</td></tr>
+                            <tr><td>Skłony 2min</td><td>≥70</td><td>≥60</td></tr>
+                            <tr><td>Pompki</td><td>≥50</td><td>≥35</td></tr>
+                            <tr><td>Bieg wahadłowy 10x10m</td><td>&lt;29.5s</td><td>&lt;31.5s</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <h2>🏅 Normy Formoza</h2>
+                    <table>
+                        <thead><tr><th>Test</th><th>Mężczyźni</th><th>Kobiety</th></tr></thead>
+                        <tbody>
+                            <tr><td>Bieg 3000m</td><td>&lt;12:30</td><td>&lt;14:30</td></tr>
+                            <tr><td>Podciąganie</td><td>≥12</td><td>≥7</td></tr>
+                            <tr><td>Skłony 2min</td><td>≥75</td><td>≥65</td></tr>
+                            <tr><td>Pompki</td><td>≥55</td><td>≥40</td></tr>
+                            <tr><td>Pływanie 200m</td><td>&lt;4:30</td><td>&lt;5:00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="plans" class="tab-content">
+                <div class="card">
+                    <h2>📋 Generator Planów Treningowych</h2>
+                    <div class="form-group">
+                        <label>Cel:</label>
+                        <select class="input" id="plan-goal">
+                            <option>Selekcja GROM</option>
+                            <option>Selekcja JWK</option>
+                            <option>Selekcja Formoza</option>
+                            <option>Poprawa ogólna</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Długość planu:</label>
+                        <select class="input" id="plan-duration">
+                            <option>4 tygodnie</option>
+                            <option>8 tygodni</option>
+                            <option>12 tygodni</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dni treningowe w tygodniu:</label>
+                        <select class="input" id="plan-days">
+                            <option>3 dni</option>
+                            <option>4 dni</option>
+                            <option>5 dni</option>
+                            <option>6 dni</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dostępny sprzęt:</label>
+                        <select class="input" id="plan-equipment">
+                            <option>Minimalny (drążek, matę)</option>
+                            <option>Standard (siłownia domowa)</option>
+                            <option>Pełna siłownia</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-accent btn-block" onclick="generatePlan()">Generuj plan</button>
+                    <div id="plan-result" style="margin-top: 1.5rem;"></div>
+                </div>
+            </div>
+            <div id="settings" class="tab-content">
+                <div class="card">
+                    <h2>⚙️ Ustawienia</h2>
+                    <h3 style="margin-top: 1rem;">Profil użytkownika</h3>
+                    <div class="form-group"><label>Imię:</label><input type="text" class="input" id="profile-name" placeholder="Twoje imię"></div>
+                    <div class="form-group">
+                        <label>Płeć:</label>
+                        <select class="input" id="profile-gender">
+                            <option value="M">Mężczyzna</option>
+                            <option value="K">Kobieta</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Wiek:</label><input type="number" class="input" id="profile-age" min="18" max="60"></div>
+                    <div class="form-group"><label>Wzrost (cm):</label><input type="number" class="input" id="profile-height" placeholder="180"></div>
+                    <div class="form-group"><label>Waga (kg):</label><input type="number" class="input" id="profile-weight" placeholder="80"></div>
+                    <div class="form-group">
+                        <label>Cel:</label>
+                        <select class="input" id="profile-goal">
+                            <option>GROM</option>
+                            <option>JWK</option>
+                            <option>Formoza</option>
+                            <option>Ogólna sprawność</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-accent btn-block" onclick="saveProfile()">Zapisz profil</button>
+                    <h3 style="margin-top: 2rem;">Export/Import danych</h3>
+                    <button class="btn btn-primary btn-block" onclick="exportData()">📥 Eksportuj dane do JSON</button>
+                    <button class="btn btn-secondary btn-block" onclick="document.getElementById('import-file').click()">📤 Importuj dane</button>
+                    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
+                    <h3 style="margin-top: 2rem;">Danger Zone</h3>
+                    <button class="btn btn-secondary btn-block" onclick="resetApp()">🗑️ Reset aplikacji (usuń wszystkie dane)</button>
+                </div>
+            </div>
+        </main>
+        <button class="fab" onclick="showTab('log')" title="Dodaj trening">+</button>
+    </div>
+    <script>
+        const storage={get:k=>JSON.parse(localStorage.getItem(k)||'null'),set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),remove:k=>localStorage.removeItem(k)};
+        document.addEventListener('DOMContentLoaded',function(){loadDashboard();loadExercises();loadWorkoutHistory();loadProfile();document.getElementById('workout-date').valueAsDate=new Date();});
+        function toggleDarkMode(){document.body.classList.toggle('dark-mode');const isDark=document.body.classList.contains('dark-mode');storage.set('darkMode',isDark);}
+        if(storage.get('darkMode')){document.body.classList.add('dark-mode');}
+        function showTab(tabName){document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById(tabName).classList.add('active');event.target.classList.add('active');}
+        function loadDashboard(){const workouts=storage.get('workouts')||[];const now=new Date();const last7days=workouts.filter(w=>{const diff=(now-new Date(w.date))/(1000*60*60*24);return diff<=7;}).length;const last30days=workouts.filter(w=>{const diff=(now-new Date(w.date))/(1000*60*60*24);return diff<=30;}).length;document.getElementById('stats-7days').textContent=last7days;document.getElementById('stats-30days').textContent=last30days;document.getElementById('stats-total').textContent=workouts.length;document.getElementById('stats-streak').textContent=calculateStreak(workouts);const recent=workouts.slice(-5).reverse();if(recent.length>0){document.getElementById('recent-workouts').innerHTML=recent.map(w=>`<div style="padding:0.75rem;border-left:3px solid var(--accent);margin-bottom:0.5rem;"><strong>${w.date}</strong> - ${w.type}<br><small>${w.description.substring(0,100)}...</small></div>`).join('');}}
+        function calculateStreak(workouts){if(workouts.length===0)return 0;const sorted=workouts.map(w=>new Date(w.date)).sort((a,b)=>b-a);let streak=1;for(let i=1;i<sorted.length;i++){const diff=(sorted[i-1]-sorted[i])/(1000*60*60*24);if(diff<=1)streak++;else break;}return streak;}
+        const exercisesData=[{name:'Bieg 3000m',category:'Wytrzymałość',description:'Test wytrzymałości kardio',norms:{grom:{M:'<13:40',K:'<15:30'}}},{name:'Podciąganie na drążku',category:'Siła',description:'Chwyt nachwytowy, pełny zakres',norms:{grom:{M:'≥9',K:'≥5'}}},{name:'Skłony tułowia',category:'Core',description:'2 minuty bez przerwy',norms:{grom:{M:'≥65',K:'≥55'}}},{name:'Pompki',category:'Siła',description:'Ciągłe powtórzenia',norms:{grom:{M:'≥48',K:'≥30'}}},{name:'Bieg wahadłowy 10x10m',category:'Motoryka',description:'Szybkość i zwinność',norms:{grom:{M:'<30.8s',K:'<32.3s'}}},{name:'Wiosłowanie 500m',category:'Wytrzymałość',description:'Ergometr wioślarski',norms:{grom:{M:'<1:50',K:'<2:00'}}},{name:'Cooper Test',category:'Wytrzymałość',description:'Bieg 12 minut',norms:{grom:{M:'>3000m',K:'>2700m'}}},{name:'Przysiady z ciężarem',category:'Siła',description:'Full depth squat',norms:{grom:{M:'1.5x BW',K:'1.2x BW'}}},{name:'Martwy ciąg',category:'Siła',description:'Conventional deadlift',norms:{grom:{M:'2x BW',K:'1.5x BW'}}},{name:'Burpees',category:'Motoryka',description:'Pełny zakres ruchu',norms:{grom:{M:'20/min',K:'15/min'}}}];
+        function loadExercises(){const grid=document.getElementById('exercise-grid');grid.innerHTML=exercisesData.map(ex=>`<div class="exercise-card" onclick="showExerciseDetails('${ex.name}')"><span class="category">${ex.category}</span><h3>${ex.name}</h3><p style="font-size:0.9rem;opacity:0.8;">${ex.description}</p><div style="margin-top:0.5rem;"><span class="norm-badge">GROM M: ${ex.norms.grom.M}</span><span class="norm-badge">GROM K: ${ex.norms.grom.K}</span></div></div>`).join('');}
+        function showExerciseDetails(name){const ex=exercisesData.find(e=>e.name===name);alert(`${ex.name}\n\n${ex.description}\n\nNormy GROM:\nMężczyźni: ${ex.norms.grom.M}\nKobiety: ${ex.norms.grom.K}`);}
+        let timerInterval=null;let timerSeconds=0;let timerRunning=false;
+        function changeTimerMode(){const mode=document.getElementById('timer-mode').value;const config=document.getElementById('timer-config');if(mode==='stopwatch'){config.style.display='none';}else{config.style.display='block';}resetTimer();}
+        function startTimer(){if(timerRunning)return;const mode=document.getElementById('timer-mode').value;if(mode==='stopwatch'){timerRunning=true;timerInterval=setInterval(()=>{timerSeconds++;updateTimerDisplay();},1000);}else{const minutes=parseInt(document.getElementById('timer-minutes').value)||0;const seconds=parseInt(document.getElementById('timer-seconds').value)||0;timerSeconds=minutes*60+seconds;if(timerSeconds<=0){alert('Ustaw czas większy niż 0!');return;}timerRunning=true;timerInterval=setInterval(()=>{timerSeconds--;updateTimerDisplay();if(timerSeconds<=0){pauseTimer();alert('Czas minął! 🎉');}},1000);}}
+        function pauseTimer(){timerRunning=false;if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+        function resetTimer(){pauseTimer();timerSeconds=0;updateTimerDisplay();}
+        function updateTimerDisplay(){const mins=Math.floor(Math.abs(timerSeconds)/60);const secs=Math.abs(timerSeconds)%60;const sign=timerSeconds<0?'-':'';document.getElementById('timer-display').textContent=sign+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');}
+        function saveWorkout(event){event.preventDefault();const workout={date:document.getElementById('workout-date').value,type:document.getElementById('workout-type').value,description:document.getElementById('workout-description').value,feeling:document.getElementById('workout-feeling').value,timestamp:new Date().toISOString()};const workouts=storage.get('workouts')||[];workouts.push(workout);storage.set('workouts',workouts);alert('Trening zapisany! 💪');document.getElementById('workout-form').reset();document.getElementById('workout-date').valueAsDate=new Date();loadWorkoutHistory();loadDashboard();}
+        function loadWorkoutHistory(){const workouts=storage.get('workouts')||[];const container=document.getElementById('workout-history');if(workouts.length===0){container.innerHTML='<p style="opacity:0.7;">Brak zapisanych treningów.</p>';return;}container.innerHTML=workouts.reverse().map((w,i)=>`<div class="card" style="margin-bottom:1rem;"><strong>${w.date}</strong> - ${w.type} (⭐${w.feeling}/5)<p style="margin:0.5rem 0;">${w.description}</p><button class="btn btn-small btn-secondary" onclick="deleteWorkout(${workouts.length-1-i})">Usuń</button></div>`).join('');}
+        function deleteWorkout(index){if(!confirm('Czy na pewno usunąć ten trening?'))return;const workouts=storage.get('workouts')||[];workouts.splice(index,1);storage.set('workouts',workouts);loadWorkoutHistory();loadDashboard();}
+        function calculateNorms(){const unit=document.getElementById('calc-unit').value;const gender=document.getElementById('calc-gender').value;const run=document.getElementById('calc-run').value;const pullups=parseInt(document.getElementById('calc-pullups').value);const situps=parseInt(document.getElementById('calc-situps').value);const pushups=parseInt(document.getElementById('calc-pushups').value);const shuttle=parseFloat(document.getElementById('calc-shuttle').value);const norms={grom:{M:{run:820,pullups:9,situps:65,pushups:48,shuttle:30.8},K:{run:930,pullups:5,situps:55,pushups:30,shuttle:32.3}},jwk:{M:{run:780,pullups:10,situps:70,pushups:50,shuttle:29.5},K:{run:900,pullups:6,situps:60,pushups:35,shuttle:31.5}},formoza:{M:{run:750,pullups:12,situps:75,pushups:55,shuttle:28.5},K:{run:870,pullups:7,situps:65,pushups:40,shuttle:30.5}}};const target=norms[unit][gender];const[mins,secs]=run.split(':').map(Number);const runSeconds=mins*60+secs;const results={run:runSeconds<=target.run?'✅ PASSED':'❌ FAILED',pullups:pullups>=target.pullups?'✅ PASSED':'❌ FAILED',situps:situps>=target.situps?'✅ PASSED':'❌ FAILED',pushups:pushups>=target.pushups?'✅ PASSED':'❌ FAILED',shuttle:shuttle<=target.shuttle?'✅ PASSED':'❌ FAILED'};const passed=Object.values(results).filter(r=>r.includes('PASSED')).length;document.getElementById('calc-result').innerHTML=`<div class="card" style="background:${passed===5?'var(--success)':'var(--warning)'};color:white;"><h3>Wynik: ${passed}/5 testów zaliczonych</h3><ul style="margin-top:1rem;line-height:2;"><li>Bieg 3000m: ${results.run} (Twój: ${run}, Norma: ${Math.floor(target.run/60)}:${(target.run%60).toString().padStart(2,'0')})</li><li>Podciąganie: ${results.pullups} (Twój: ${pullups}, Norma: ${target.pullups})</li><li>Skłony: ${results.situps} (Twój: ${situps}, Norma: ${target.situps})</li><li>Pompki: ${results.pushups} (Twój: ${pushups}, Norma: ${target.pushups})</li><li>Bieg wahadłowy: ${results.shuttle} (Twój: ${shuttle}s, Norma: ${target.shuttle}s)</li></ul>${passed===5?'<p style="margin-top:1rem;font-size:1.2rem;">🎉 GRATULACJE! Spełniasz normy!</p>':'<p style="margin-top:1rem;">Trenuj dalej! 💪</p>'}</div>`;}
+        function generatePlan(){const goal=document.getElementById('plan-goal').value;const duration=document.getElementById('plan-duration').value;const days=document.getElementById('plan-days').value;const equipment=document.getElementById('plan-equipment').value;document.getElementById('plan-result').innerHTML=`<div class="card"><h3>Plan treningowy: ${goal}</h3><p><strong>Długość:</strong> ${duration}</p><p><strong>Częstotliwość:</strong> ${days}</p><p><strong>Sprzęt:</strong> ${equipment}</p><h4 style="margin-top:1.5rem;">Przykładowy tydzień 1:</h4><ul style="line-height:2;"><li><strong>Dzień 1:</strong> Bieg interwałowy 5x400m + Core 20min</li><li><strong>Dzień 2:</strong> Siła górna - podciąganie, pompki, uginanie</li><li><strong>Dzień 3:</strong> Odpoczynek lub mobilność</li><li><strong>Dzień 4:</strong> Bieg długi 5-7km + skłony tułowia</li><li><strong>Dzień 5:</strong> Siła dolna - przysiady, martwy ciąg</li><li><strong>Dzień 6:</strong> CrossFit-style WOD (AMRAP/EMOM)</li><li><strong>Dzień 7:</strong> Odpoczynek aktywny</li></ul><p style="margin-top:1rem;opacity:0.8;"><em>💡 To przykładowy plan. Dostosuj do swojego poziomu i możliwości!</em></p></div>`;}
+        function saveProfile(){const profile={name:document.getElementById('profile-name').value,gender:document.getElementById('profile-gender').value,age:document.getElementById('profile-age').value,height:document.getElementById('profile-height').value,weight:document.getElementById('profile-weight').value,goal:document.getElementById('profile-goal').value};storage.set('profile',profile);alert('Profil zapisany! ✅');}
+        function loadProfile(){const profile=storage.get('profile');if(!profile)return;document.getElementById('profile-name').value=profile.name||'';document.getElementById('profile-gender').value=profile.gender||'M';document.getElementById('profile-age').value=profile.age||'';document.getElementById('profile-height').value=profile.height||'';document.getElementById('profile-weight').value=profile.weight||'';document.getElementById('profile-goal').value=profile.goal||'GROM';}
+        function exportData(){const data={profile:storage.get('profile'),workouts:storage.get('workouts'),exportDate:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`s3wat-training-backup-${new Date().toISOString().split('T')[0]}.json`;a.click();}
+        function importData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){try{const data=JSON.parse(e.target.result);if(data.profile)storage.set('profile',data.profile);if(data.workouts)storage.set('workouts',data.workouts);alert('Dane zaimportowane! ✅');location.reload();}catch(err){alert('Błąd importu: '+err.message);}};reader.readAsText(file);}
+        function resetApp(){if(!confirm('CZY NA PEWNO usunąć wszystkie dane? Tej operacji nie można cofnąć!'))return;if(!confirm('Ostatnia szansa! Usunąć wszystko?'))return;localStorage.clear();alert('Aplikacja zresetowana.');location.reload();}
+        let deferredPrompt;window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;setTimeout(()=>{if(confirm('📱 Zainstaluj S3 WAT Training Hub jako aplikację na telefonie?')){deferredPrompt.prompt();deferredPrompt.userChoice.then((choiceResult)=>{deferredPrompt=null;});}},10000);});
+        if('serviceWorker' in navigator){navigator.serviceWorker.register('data:text/javascript,console.log("SW registered")').catch(()=>{console.log('SW registration failed');});}
+    </script>
+</body>
+</html>
